@@ -1,0 +1,1 @@
+﻿const AppBaseUrl = 'http://192.168.11.98:80/cadviewer/';

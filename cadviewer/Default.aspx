@@ -85,8 +85,8 @@
                         <h2>CADViewer Samples</h2>
 
                         <h3>Install Notes:</h3>
-		
-						<p><h4>ASP.NET - Windows:</h4>
+						<h4>ASP.NET - Windows:</h4>
+						<p>
 						Unzip and install under Visual Studio.
 						<br>Links to all samples in cadviwer/html are in <strong>Default.aspx</strong>. Run this page.
 						<br>All ashx handlers for server-client communication are in /cadviewer/.
