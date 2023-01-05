@@ -1,3 +1,13 @@
+1. iis url rewrite 
+https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi
+
+2. vc runtime (server)
+https://learn.microsoft.com/zh-TW/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022
+https://aka.ms/vs/17/release/vc_redist.x64.exe
+
+3. web.config (appSettings)
+
+
 # cadviewer-testapp-dotnet-01
 CADViewer sample implementation on dotNet w .ASHX Handlers
 
