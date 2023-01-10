@@ -432,8 +432,8 @@
             var user_id = "user_1";
 
             // set a value for redlines
-            cvjs_setCurrentStickyNoteValues_NameUserId(user_name, user_id);
-            cvjs_setCurrentRedlineValues_NameUserid(user_name, user_id);
+            //cvjs_setCurrentStickyNoteValues_NameUserId(user_name, user_id);
+            //cvjs_setCurrentRedlineValues_NameUserid(user_name, user_id);
 
             cvjs_dragBackgroundToFront_SVG("floorPlan");
             //cvjs_initZeroWidthHandling("floorPlan", 1.0);
@@ -459,10 +459,18 @@
                 cvjs_setGlobalSpaceImageObjectScaleFactor(this.value / 100.0);
 
             }
-
+            
             //$('.topIconMenu_placeholder_1').css({'top':'0px'});
 
+            cvjs_setServerSaveHandlerRedlines("SaveRedlinesHandler.ashx");	// name of server side save-file controller document
+            cvjs_setServerLoadHandlerRedlines("LoadRedlinesHandler.ashx"); // name of server side append-file controller document
+
+
+            if ($('#HiddenHasJsonFile').val())  fnRedLineLoad();
+            
         }
+
+        
 
 
         function cvjs_EmailSentStatus(html) {
@@ -474,6 +482,8 @@
             // generic callback method, called when the redline is loaded
             // here you fill in your stuff, hide specific users and lock specific users
             // this method MUST be retained as a dummy method! - if not implemeted -
+
+            console.log('cvjs_OnLoadEndRedlines');
 
             // I am hiding users added to the hide user list
             cvjs_hideAllRedlines_HiddenUsersList();
@@ -616,31 +626,35 @@
 
             // there are two modes, user handling of redlines
             // alternatively use the build in redline file manager
-            cvjs_openRedlineSaveModal("floorPlan");
+            //cvjs_openRedlineSaveModal("floorPlan");
 
-            // custom method startMethodRed to set the name and location of redline to save
+            // custom method fnSetupSaveAndLoad to set the name and location of redline to save
             // see implementation below
-            //startMethodRed();
+            fnSetupSaveAndLoad();
+            console.log('cvjs_saveStickyNotesRedlinesUser');
             // API call to save stickynotes and redlines
-            //cvjs_saveStickyNotesRedlines("floorPlan");
+            cvjs_saveStickyNotesRedlines("floorPlan");
         }
 
 
         // This method is linked to the load redline icon in the imagemap
         function cvjs_loadStickyNotesRedlinesUser() {
 
-            cvjs_openRedlineLoadModal("floorPlan");
+            //cvjs_openRedlineLoadModal("floorPlan");
 
             // first the drawing needs to be cleared of stickynotes and redlines
             //cvjs_deleteAllStickyNotes();
             //cvjs_deleteAllRedlines();
 
-            // custom method startMethodRed to set the name and location of redline to load
+            // custom method fnSetupSaveAndLoad to set the name and location of redline to load
             // see implementation below
-            // startMethodRed();
+            fnSetupSaveAndLoad();
 
             // API call to load stickynotes and redlines
-            //cvjs_loadStickyNotesRedlines("floorPlan");
+            console.log('cvjs_loadStickyNotesRedlinesUser');
+            //cvjs_setStickyNoteRedlineUrl(ServerUrl + "content/redlines/fileloader_670/redline-test1.js");
+            
+            cvjs_loadStickyNotesRedlines("floorPlan");
         }
 
         /// NOTE: ABOVE REDLINE SAVE LOAD CONTROLLERS
@@ -1697,6 +1711,31 @@
 
     </script>
 
+    <script id="scriptRedLine">
+
+        function fnRedLineSave() {
+            fnSetupSaveAndLoad();  
+            cvjs_saveStickyNotesRedlines("floorPlan");
+        }
+
+        function fnRedLineLoad() {
+            fnSetupSaveAndLoad();
+            cvjs_loadStickyNotesRedlines("floorPlan");
+        }
+
+        function fnSetupSaveAndLoad() {
+
+            var v1 = $('#HiddenRedLineFileJson').val();
+            //var v2 = 'save_url.aspx?v=save';
+
+            if (!v1) return;
+
+            cvjs_setStickyNoteRedlineUrl(v1);
+            cvjs_setStickyNoteSaveRedlineUrl(v1);
+        }
+
+    </script>
+
     <style id="styleSlider">
         .slider {
           -webkit-appearance: none;
@@ -1810,9 +1849,15 @@
         <asp:HiddenField ID="hiddenServerUrl" runat="server" ClientIDMode="Static" />
         <asp:HiddenField ID="hiddenServerBackEndUrl" runat="server" ClientIDMode="Static" />
 
+        <asp:HiddenField ID="HiddenRedLineFileJson" runat="server" ClientIDMode="Static" />
+        <asp:HiddenField ID="HiddenHasJsonFile" runat="server" ClientIDMode="Static" />
         
         <span></span>
     </form>
+
+    <div style="position:fixed;right:0px;top:5px;">
+        <input type="button" value="Save" onclick=' fnRedLineSave();' />
+    </div>
 
     <table width="100%" height="100%" border="0" cellspacing="0" border-spacing="0" id="mainTable" style="display: none;">
         <tr style="background-color: rgb(255,255,255)" height="100px">

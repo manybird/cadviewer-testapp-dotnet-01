@@ -34,7 +34,7 @@ public class Handler : IHttpHandler {
 
         context.Response.ContentType = "text/plain";
 
-        string filePath =  DecodeUrlString(context.Request["file"]).Trim('/');
+        string filePath = DecodeUrlString(context.Request["file"]).Trim('/');
         string fileContent = context.Request["file_content"];
 
         string customContent = context.Request["custom_content"];
@@ -44,84 +44,90 @@ public class Handler : IHttpHandler {
         string ServerUrl = ConfigurationManager.AppSettings["ServerUrl"];
         string AppLocation = ConfigurationManager.AppSettings["AppLocation"];
 
+        string localPath = "";
+        Exception ex = null;
+        string mapFrom = ConfigurationManager.AppSettings["EdmsDrawingPathMapFrom"];
+
+        if (string.IsNullOrEmpty(mapFrom))
+        {
+            try
+            {
+
+                string listtype = context.Request["listtype"].Trim('/');
+
+                if ((listtype.IndexOf("serverfolder") == 0) || (listtype.IndexOf("redline") == 0))
+                //            if ( (listtype.IndexOf("serverfolder") == 0) )
+                {
+                    if (filePath.IndexOf(ServerUrl) == 0)
+                    {
+                        // do nothing 
+                    }
+                    else
+                        filePath = ServerLocation + filePath;
+                }
+
+
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.Message);
+            }
+
+            if (filePath.IndexOf(ServerUrl) == 0)
+            {
+
+                filePath = ServerLocation + filePath.Substring(ServerUrl.Length);
+
+            }
+            var folder = filePath.Substring(0, filePath.LastIndexOf("/"));
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            localPath = filePath;
+
+            try
+            {
+                localPath = new Uri(filePath).LocalPath;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                ex = e;
+            }
+        }
+        else
+        {
+            localPath = filePath;
+            var f = new FileInfo(localPath);
+
+            if (!f.Directory.Exists) f.Directory.Create();
+        }
+             
 
         try
         {
 
-            string listtype = context.Request["listtype"].Trim('/');
-
-            if ( (listtype.IndexOf("serverfolder") == 0) ||   (listtype.IndexOf("redline") == 0) )
-//            if ( (listtype.IndexOf("serverfolder") == 0) )
-            {
-                if (filePath.IndexOf(ServerUrl) == 0)
-                {
-                    // do nothing 
-                }
-                else
-                    filePath = ServerLocation + filePath;
-            }
-
-
-        }
-        catch (Exception Ex)
-        {
-            Console.WriteLine(Ex.Message);
-        }
-
-
-
-
-        if (filePath.IndexOf(ServerUrl) == 0)
-        {
-
-            filePath = ServerLocation + filePath.Substring(ServerUrl.Length);
-
-        }
-
-
-        // we need to create the filePath folder
-        //string tmpPrintFolder = HttpContext.Current.Server.MapPath("~\\temp_print");
-        //Directory.CreateDirectory(tmpPrintFolder);
-
-        //string absFilePath = Path.Combine(tmpPrintFolder, filePath);
-
-        //context.Response.Write(absFilePath);
-
-        //File.WriteAllText(absFilePath, fileContent);
-        
-
-        var folder = filePath.Substring(0, filePath.LastIndexOf("/"));
-
-        if (!Directory.Exists(folder))
-        {
-            Directory.CreateDirectory(folder);
-        }
-
-
-
-        string localPath = filePath;
-
-        try {
-            localPath = new Uri(filePath).LocalPath;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
-
-
-       try {
             File.WriteAllText(localPath, fileContent);
+
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ex = e;
         }
-
-
-
 
         context.Response.ContentType = "text/plain";
+
+        if (ex != null)
+        {
+            context.Response.StatusCode = 500;
+            context.Response.Write(ex.Message);
+            context.Response.Write(ex.StackTrace);
+            context.Response.End();
+        }
+
         context.Response.Write("Succes");
 
         //    context.Response.Write(customContent);

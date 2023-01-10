@@ -7,6 +7,9 @@ https://aka.ms/vs/17/release/vc_redist.x64.exe
 
 3. web.config (appSettings)
 
+4. Testing Url 
+http://eform.powersl.net:8088/cadviewer/aspx/pViewer.aspx?file=d%3A%5Cdwg%5Chq17.dwg
+
 
 # cadviewer-testapp-dotnet-01
 CADViewer sample implementation on dotNet w .ASHX Handlers

@@ -14,7 +14,7 @@ function cvjs_customCommand_01(floorplan_div){
 
 	// Use the CADViewer API to program your own interaction with the CAD canvas
 
-	window.alert("Hello world - Custom Command 01");
+	window.alert("Click - Custom Command 01 Save as");
 
 }
 

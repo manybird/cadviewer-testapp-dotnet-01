@@ -41,48 +41,44 @@ public class Handler : IHttpHandler {
         string ServerLocation = ConfigurationManager.AppSettings["ServerLocation"];
         string ServerUrl = ConfigurationManager.AppSettings["ServerUrl"];
 
-
-        try
+        string localPath = "";
+        Exception ex = null;
+        string mapFrom = ConfigurationManager.AppSettings["EdmsDrawingPathMapFrom"];
+        if (string.IsNullOrEmpty(mapFrom))
         {
-
-            string loadtype = context.Request["loadtype"].Trim('/');
-
-//            context.Response.Write("hello loadtype"+loadtype);
-
-            if ( (loadtype.IndexOf("serverfilelist") == 0) || (loadtype.IndexOf("serverfolder") == 0) ||  (loadtype.IndexOf("redline") == 0) )
+            try
             {
-                 if (filePath.IndexOf(ServerUrl) == 0)
+                string loadtype = context.Request["loadtype"].Trim('/');                                    
+                if ((loadtype.IndexOf("serverfilelist") == 0) || (loadtype.IndexOf("serverfolder") == 0) || (loadtype.IndexOf("redline") == 0))
+                {
+                    if (filePath.IndexOf(ServerUrl) == 0)
                     {
                         //do nothing!! - handle below
                     }
-                 else
-                    filePath = ServerLocation + filePath;
+                    else
+                        filePath = ServerLocation + filePath;
+                }
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine(Ex.Message);
             }
 
+            if (filePath.IndexOf(ServerUrl) == 0)
+            {
+                filePath = ServerLocation + filePath.Substring(ServerUrl.Length);
+            }
 
+            localPath = new Uri(filePath).LocalPath;
         }
-        catch (Exception Ex)
+        else
         {
-            Console.WriteLine(Ex.Message);
+            localPath = filePath;
         }
-
-
-        if (filePath.IndexOf(ServerUrl) == 0)
-        {
-            filePath = ServerLocation + filePath.Substring(ServerUrl.Length);
-        }
-
-
-        //        string localPath = new Uri(filePath).LocalPath;
-
-
+    
         try
         {
-
-            // context.Response.Write("hello"+filePath);
-
-            string localPath = new Uri(filePath).LocalPath;
-
+       
             //if (true) return;
 
             using (FileStream fsSource = new FileStream(localPath, FileMode.Open, FileAccess.Read))

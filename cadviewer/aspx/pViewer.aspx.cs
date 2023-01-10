@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -22,11 +23,37 @@ public partial class pViewer : System.Web.UI.Page
             Response.End();
         }
 
-        hiddenServerUrl.Value = System.Configuration.ConfigurationManager.AppSettings["ServerUrl"];
-        hiddenServerBackEndUrl.Value = System.Configuration.ConfigurationManager.AppSettings["ServerUrl"];
+        hiddenServerUrl.Value = ConfigurationManager.AppSettings["ServerUrl"];
+        hiddenServerBackEndUrl.Value = ConfigurationManager.AppSettings["ServerUrl"];
 
-        string fileLocation = System.Configuration.ConfigurationManager.AppSettings["fileLocation"];
-        string fileLocationUrl = System.Configuration.ConfigurationManager.AppSettings["fileLocationUrl"];
+        string fileLocation = ConfigurationManager.AppSettings["fileLocation"];
+        string fileLocationUrl = ConfigurationManager.AppSettings["fileLocationUrl"];
+
+        string mapFrom = ConfigurationManager.AppSettings["EdmsDrawingPathMapFrom"];
+        string mapTo = ConfigurationManager.AppSettings["EdmsDrawingPathMapTo"];
+
+        if (mapFrom!=null && mapTo != null)
+        {
+            mapFrom = mapFrom.ToLower();
+            mapTo = mapTo.ToLower();
+            string fullName1 = f.FullName.ToLower();           
+            if (fullName1.IndexOf(mapFrom) == 0)
+            {
+                var json1 = fullName1.Replace(mapFrom, mapTo) + ".json";
+
+                
+
+                HiddenRedLineFileJson.Value = json1;
+                var jsonF1 = new FileInfo(json1);
+                if (jsonF1.Exists)
+                {
+                    HiddenHasJsonFile.Value = "1";
+                }
+            }
+                
+        }
+
+
 
         string newPathRelative = @"tmp01\" + Guid.NewGuid() + @"\" + f.Name;
         string newUrlPathRelative = newPathRelative.Replace(@"\", "/");

@@ -7,7 +7,7 @@
 		<page>
 			<command>cvjs_publishPDF</command>
 			<command>cvjs_saveAsSVGOnServer</command>
-			<command>cvjs_loadStickyNotesRedlinesUser</command>
+			<!--<command>cvjs_loadStickyNotesRedlinesUser</command>-->
 			<command>cvjs_saveStickyNotesRedlinesUser</command>
 			<command>cvjs_setRedlineColor</command>
 			<command>cvjs_setRedlineThickness</command>
@@ -26,6 +26,8 @@
 			<command>cvjs_undoDeleteLastRedline</command>
 			<command>cvjs_clearCurrentRedline</command>
 			<command>cvjs_mergeDXFDWG</command>
+			<!--<command>cvjs_customCommand_01</command>-->
+			
 		</page>
 		<page>
 			<command>cvjs_LayerList</command>
